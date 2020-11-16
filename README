@@ -1,0 +1,146 @@
+# **GITLAB 설정하기**
+
+## GitLab 환경 세팅(웹 버전)
+
+1 [SSG GitLab 접속](https://gitlab.ssgadm.com) > 로그인 (ID 및 PW 초기값은 젠킨스와 동일)
+2 우측 최상단 아이콘 클릭 > Settings > 좌측 메뉴 중 Profile > Main settings 의 Email 복사
+3 이클립스 > Window > Preferences > Team > Git > Configuration > Add Entry 버튼 클릭 > Key 란에 user.email Value 란에 2에서 복사한 내용 붙여넣기 후 Add > Add Entry 버튼 클릭 > Key 란에 user.name Value 란에 사번 기입 후 Add > Apply
+4 이클립스 > Window > Preferences > General > Network Connections > SSH2 > 탭 메뉴 중 Key Management > Generate RSA Key 버튼 클릭 > 우측 하단 Save Private Key > OK 저장 OK
+5 C:\Users\user\.ssh 폴더 이동 > id_rsa.pub 파일 내용 복사 > SSG GitLab 접속 후 2의 Settings 까지 진행 > 좌측 메뉴 중 SSH Keys > Key 란에 붙여넣기 및 Title 란에 임의로 기입 후 Add keys 
+6 상단 메뉴 중 Projects > Your projects > 연동하고픈 프로젝트 클릭 (크롤링의 경우 'crawler / ssg-crawler') > 우측 상단에 청색 'Clone'버튼 > Clone with SSH 아래 URI 복사
+7 이클립스 > Window > Show View > Other > 검색창에 git 입력 후 Git Repositories 선택 및 OK
+8 Git Repositories 창의 'Clone a Git repository' 클릭 > URI 란에 6의 복사본 붙여넣기 및 Protocol 란에 'SSH' 선택 후 Next > YES YES > master 브랜치 체크 후 Next 
+9 **Directory 란에 원하는 Local Repository 및 이클립스 프로젝트 경로를 기입** > 'Import all existing Eclipse projects after clone finishies' 체크 후 Finish 클릭
+10 Project 관련 View에 해당 프로젝트가 등록된 것을 확인.
+
+# **GitLab 기능 사용**
+
+## 준비사항
+
+* Git Staging창과 History창 열어두기.
+* Git Staging : Window → Show View → Other... → Git → Git Staging
+* History : Window → Show View → Other... → Team → History (프로젝트 우클릭 → Team → Show in History)
+
+## commit
+
+* commit : Local Repository에 저장하는 기능으로 Remote Repository와 별개.
+
+1 
+
+
+-pull
+1 Project 관련 View에서 해당 프로젝트 또는 파일 우클릭 > Team > Repository > pull 
+
+-push
+1 
+* File 추가/삭제/변경시 모든 내용은 Git Staging Console창의 Unstaged Changed에 표시됨.
+* Unstaged Changed에서 커밋대상 파일을 선택 후 "Add to Index" 클릭
+
+![alt unstaged-changes][eclipse-unstaged-changes]
+[eclipse-unstaged-changes]: img/eclipse/unstaged-changed.png
+<br />
+
+* 선택된 파일들은 Staged Changes로 이동됨, **Commit시에는 Staged Changed에 있는 모든 파일이 Commit 된다.**
+* Commit Message 작성 후 Commit 클릭
+
+![alt commit-message][eclipse-commit-message]
+[eclipse-commit-message]: img/eclipse/commit-message.png
+<br />
+
+## push 하기1 - 로컬저장소가 최신인 경우
+
+
+변경사항을 원격저장소 전송 후 공유하겠다는 의미
+
+svn의 commit은 git의 commit+push와 비슷하다.
+<br />
+<br />
+
+* History 창에서 push대상 commit을 볼 수 있음.
+* origin/master는 원격저장소의 최신 commit을 가리킴
+* master|HEAD는 로컬저장소의 최신 commit을 가리킴
+* 아래 이미지를 보면 아직 push하지 않은 2개의 commit이 있는것을 알 수 있다.
+
+![alt push1][eclipse-push1]
+[eclipse-push1]: img/eclipse/push1.png
+
+* push대상 커밋 우클릭 후 Push Commit... 클릭
+* "Configure upstream for push and pull" 체크 후 "When pulling"을 "Rebase"로 변경후 Next 클릭
+
+![alt push-dialog][eclipse-push-dialog] 
+[eclipse-push-dialog]: img/eclipse/push-dialog.png
+
+* Finish → OK
+  
+![alt push-dialog2][eclipse-push-dialog2]
+[eclipse-push-dialog2]: img/eclipse/push-dialog2.png
+<br />  
+
+## push 하기2 - 로컬저장소가 최신이 아니면서 로컬의 모든 파일이 commit된 상태인 경우
+
+* Push Commit... 클릭시 아래와 같이 push가 reject 됨
+ 
+ ![alt push-reject][eclipse-push-reject]
+ [eclipse-push-reject]: img/eclipse/push-reject.png
+ <br />
+ 
+* 프로젝트 우클릭 → Team → Pull
+
+ ![alt pull][eclipse-pull]
+ [eclipse-pull]: img/eclipse/pull.png
+ <br />
+ 
+* 충돌없이 정상적으로 pull된 경우 아래와 같이 "Result OK"가 표시됨
+
+ ![alt pull-ok][eclipse-pull-ok]
+ [eclipse-pull-ok]: img/eclipse/pull-ok.png
+ <br />
+ 
+* 충돌이 발생한 경우에는 충돌 해결(충돌 해결 절차는 https://wiki.eclipse.org/EGit/User_Guide#Resolving_a_merge_conflict 를 참고한다.)
+ 
+* 이후의 과정은 "push 하기1"과 동일
+
+## push 하기3 - 로컬저장소가 최신이 아니면서 commit 하지 않은 변경사항이 있는 경우
+
+commit할 내용이 있으면서 아래와 같이 Unstaged Changes나 Staged Changed에 파일이 있는 경우를 얘기함
+
+![alt commit-case3][eclipse-commit-case3]
+ [eclipse-commit-case3]: img/eclipse/commit-message.png
+ <br />
+ 
+ * Push Commit... 클릭시 "push 하기2"와 같이 push가 reject 됨
+ 
+ ![alt push-reject][eclipse-push-reject]
+ [eclipse-push-reject]: img/eclipse/push-reject.png
+ <br />
+
+* 프로젝트 우클릭 → Team → Pull 클릭
+* commit하지 않은 파일들을 어떻게 처리할지 선택하라는 창이 표시됨
+
+ ![alt rebase-fail][eclipse-rebase-fail]
+ [eclipse-rebase-fail]: img/eclipse/rebase-fail.png
+ <br />
+ 
+ * Stash... 클릭 (stash는 임시저장의 의미)
+ * **필요한 경우** stash 메시지 입력(메시지 입력은 옵션)
+
+![alt stash-message][eclipse-stash-message]
+ [eclipse-stash-message]: img/eclipse/stash-message.png
+ <br /> 
+ 
+ * OK 클릭
+ * pull이 정상적으로 수행되며 이후 commit 절차는 "push 하기1"과 동일하다.
+ * push가 완료된 이후에는 Stash 된 내용으로 복구하도록 한다.
+ * Git Repositories에서 복구할 stash를 선택한 후 "Apply Stashed Changes" 클릭
+ 
+ ![alt stash-apply][eclipse-stash-apply]
+ [eclipse-stash-apply]: img/eclipse/stash-apply.png
+ <br />
+ 
+ * stash 완료 후 stash가 필요없다고 판단되면 삭제한다.
+ 
+## 기타 
+* 한 파일 내에서도 부분 commit이 가능하다.
+* PUSH 하기 전 commit은 수정이 가능하다.
+* 파일명이 변경되어도 history 추적이 가능하다.
+* remote repository와 비교하는거 찾음

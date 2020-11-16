@@ -1,0 +1,66 @@
+{
+  "mongodb": {
+    "username": "test",
+    "password": "test",
+    "database": "local",
+    "host": "10.203.7.214:27017",
+    "dialect": "mongodb"
+  },
+  "token": {
+	  "ppomppuCrawlerBot": "1012424596:AAGOLzXYobrFbDSFD-Qt-VYYjnDLBc9iS7E"        
+  },
+  "noti": {
+	  "sms": {
+		  "url" : "http://dev-eapi.ssgadm.com/noAuth/settleNoti/sendSms.ssg",
+		  "systemId" : "crawler"
+	  },
+	  "tgram": {
+		  "chatTgt" : {
+					  "ppomppuGroup" : "-338438329"
+				  }
+	  }
+  },
+  "rabbitmq": {
+	  "username" : "test",
+	  "password" : "test",
+	  "host" : "10.203.7.214",
+	  "port" : "5672",
+	  "manageport" : "15672",
+	  "vhost" : "/",
+	  "fetchCount" : 1
+  },
+  "logBaseDir":"D:/tmp/node_log",
+  "logLevel":{
+	  "file" : "info",
+	  "console" : "debug" 
+  },
+  "exchageNameSite" : "test.site.topic",
+  "failExchageNameSite" : "test.site.topic.fail",  
+  "sites" : [
+	  {
+		  "name" : "ppomppu",
+		  "data": {
+			  "routingKey" : "ppomppu",
+			  "queueName" : "test.ppomppuQ",
+			  "failQueueName" : "test.ppomppuFailQ"
+		  }
+	  },
+	  {
+		  "name" : "naver",
+		  "data": {
+			  "routingKey" : "naver",
+			  "queueName" : "test.naverQ",
+			  "failQueueName" : "test.naverFailQ"
+		  }
+	  },
+	  {
+		  "name" : "naverRelationSearchWord",
+		  "data": {
+			  "routingKey" : "naverRelationSearchWord",
+			  "queueName" : "test.naverRelationSearchWordQ",
+			  "failQueueName" : "test.naverRelationSearchWordFailQ"
+		  }
+	  }	
+  ]
+  
+}

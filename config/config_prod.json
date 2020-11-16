@@ -1,0 +1,57 @@
+{
+  "mongodb": {
+    "username": "test",
+    "password": "test",
+    "database": "local",
+    "host": "10.203.7.214:16010",
+    "dialect": "mongodb"
+  },
+  "token": {
+	    "ppomppuCrawlerBot": "1012424596:AAGOLzXYobrFbDSFD-Qt-VYYjnDLBc9iS7E"        
+  },
+  "noti": {
+	  "sms": {
+		  "url" : "http://eapi.ssgadm.com/noAuth/settleNoti/sendSms.ssg",
+		  "systemId" : "crawler"
+	  },
+	  "tgram": {
+		  "chatTgt" : {
+					  "ppomppuGroup" : "-377659011"
+				  }
+	  }
+  },
+  "rabbitmq": {
+	  "username" : "test",
+	  "password" : "test",
+	  "host" : "10.203.7.214",
+	  "port" : "5672",
+	  "vhost" : "/"
+  },
+  "logBaseDir":"/root/node/logs/node_log",
+  "logLevel":{
+	  "file" : "info",
+	  "console" : "debug" 
+  },
+  
+  "exchageNameSite" : "site.topic",
+  "failExchageNameSite" : "site.topic.fail",
+  "sites" : [
+	  {
+		  "name" : "ppomppu",
+		  "data": {
+			  "routingKey" : "ppomppu",
+			  "queueName" : "ppomppuQ",
+			  "failQueueName" : "ppomppuFailQ"
+		  }
+	  },
+	  {
+		  "name" : "naver",
+		  "data": {
+			  "routingKey" : "naver",
+			  "queueName" : "naverQ",
+			  "failQueueName" : "naverFailQ"
+		  }
+	  }
+	  ]
+  
+}
