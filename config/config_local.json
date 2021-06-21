@@ -1,9 +1,9 @@
 {
   "mongodb": {
-    "username": "test",
-    "password": "test",
-    "database": "local",
-    "host": "10.203.7.214:27017",
+	"username": "leegt80",
+    "password": "oracle2806!",
+    "database": "test",
+    "host": "cluster0-shard-00-00.jn4nh.mongodb.net:27017,cluster0-shard-00-01.jn4nh.mongodb.net:27017,cluster0-shard-00-02.jn4nh.mongodb.net:27017",
     "dialect": "mongodb"
   },
   "token": {

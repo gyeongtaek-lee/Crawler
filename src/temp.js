@@ -1,13 +1,17 @@
 /**
  * http://usejsdoc.org/
  */
-const cron = require('node-cron');
+const cron  = require('node-cron');
+
+const naver = require('./main/startNaverShoppingLowPrice');
 
 (async () => {
 	
-	cron.schedule('*/1 * * * *', function(){
+	cron.schedule('*/1 13 * * *', function(){
 		
-		console.log(new Date());
+//		console.log(new Date());
+		
+		naver.start();
 		
 	});
 	

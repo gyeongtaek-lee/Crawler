@@ -12,6 +12,8 @@ function MongoDB(){
 	
 	this.mongoose = require('mongoose');
 	
+	this.mongoose.set('useCreateIndex', true)
+	
 	this.mongoose.connection.once('open', () => {
 		
 		logger.info('mongodb connection OK.');
@@ -42,9 +44,16 @@ function MongoDB(){
 
 MongoDB.prototype.connect = async function() {
 	
+	console.log(`mongodb://${this.config.mongodb.username}:${this.config.mongodb.password}@${this.config.mongodb.host}`);
+	console.log(this.config.mongodb.database);
+	
 	// mongoose.connect('mongodb://아이디:비밀번호@주소:포트/admin', { dbName: '데이터베이스' }, function(err) {});
 //	const db = await this.mongoose.connect(`mongodb://${this.config.mongodb.username}:${this.config.mongodb.password}@${this.config.mongodb.host}`, { dbName: this.config.mongodb.database }, function(err) {
-	const db = await this.mongoose.connect(`mongodb://${this.config.mongodb.host}`, { dbName: this.config.mongodb.database }, function(err) {
+//	const db = await this.mongoose.connect(`mongodb://${this.config.mongodb.host}`, { dbName: this.config.mongodb.database }, function(err) {
+	
+	const db = await this.mongoose.connect("mongodb://leegt80:oracle2806!@cluster0-shard-00-00.jn4nh.mongodb.net:27017,cluster0-shard-00-01.jn4nh.mongodb.net:27017,cluster0-shard-00-02.jn4nh.mongodb.net:27017/test?ssl=true&replicaSet=atlas-futvuw-shard-0&authSource=admin&retryWrites=true&w=majority"
+			, { useNewUrlParser: true, useUnifiedTopology: true }
+			, function(err) {
 		
 		if (err) {
 			
@@ -58,9 +67,16 @@ MongoDB.prototype.connect = async function() {
 	
 };
 
+
 MongoDB.prototype.disconnect = async function() {
 	
 	await this.mongoose.disconnect();
+	
+};
+
+MongoDB.prototype.remove = async function() {
+	
+	await this.mongoose.connection.removeAllListeners();
 	
 };
 
