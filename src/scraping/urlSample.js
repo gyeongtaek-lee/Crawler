@@ -2,8 +2,15 @@ const moment 	= require('moment');
 const puppeteer = require('puppeteer');
 const proxyChain = require('proxy-chain');
 
-const config		= require('/config');
+const config		= require('../config');
+
+const util = require('../util');
+
+//console.log(Math.round(Date.now() / 60000));
 	
+console.log(util.utils.minute());
+
+
 //(async () => {
 //
 //	for(let i = 1; i<= 50; i++) {

@@ -19,39 +19,48 @@ const { ContentNotFoundError, TargetNotAccessError, InternalError } = require('.
  */
 naverCrawler.scraping = async(page) => {
 	
+	page.on('console', consoleObj => console.log(consoleObj.text()));
+	
 	let result = new Array();
 	
 	let goodCnt = 0;
+	let goods	= [];
 	
 	try {
 		
 	    // 상품 목록 수
-	    goodCnt = await page.$$eval('.goods_list > li', li => li.length);
+	    goodCnt = await page.$$eval('.list_basis li', li => li.length);
 	    
-		    
+	    goods = await page.$$('.list_basis li');
+
 	    for (cnt = 0; cnt < goodCnt; cnt++) {
+//	    goods.forEach(async (temp) => {
+	    	
+//	    	console.log(`=====> ${cnt}`);
 	    	
 			// 검색 페이지 크롤링
-			const contents = await page.evaluate(() => {
+			const contents = await page.evaluate(() => {			
 				
 				let item = {};
 				
-				const good = document.querySelector('.goods_list li:first-child');
+				const good = document.querySelector('.list_basis li:first-child');
 				
 				if (good) {
 					
-					const advertising	= good.querySelector('.ad_stk') && good.querySelector('.ad_stk').textContent;	// 광고 상품
+					const advertising	= good.querySelector('.ad_ad_stk__12U34') && good.querySelector('.ad_ad_stk__12U34').textContent;	// 광고 상품
+					
+					console.log(advertising);
 					
 					// 광고상품  제외
 					if (!advertising) {
 						
 						const goodNo			= good.getAttribute('data-nv-mid'); 																											// 상품 번호
-						const org_image_url	= good.querySelector('._productLazyImg').getAttribute('data-original').replace(/\?.*$/, '');							// 이미지 url
-						const title 					= good.querySelector('.tit a') && good.querySelector('.tit a').textContent; 													// 상품 명
-						let price 					= good.querySelector('.price .num') && good.querySelector('.price .num').textContent;									// 상품 가격
+						const org_image_url		= good.querySelector('._productLazyImg').getAttribute('data-original').replace(/\?.*$/, '');							// 이미지 url
+						const title 			= good.querySelector('.tit a') && good.querySelector('.tit a').textContent; 													// 상품 명
+						let price 				= good.querySelector('.price .num') && good.querySelector('.price .num').textContent;									// 상품 가격
 						let priceReloadDt		= null; 																																					// 상품 가격 변경 일자
 						if (good.querySelector('.price .num').hasAttribute('data-reload-date')) {	
-							priceReloadDt = good.querySelector('.price ._price_reload').getAttribute('data-reload-date')	;											
+							priceReloadDt = good.querySelector('.price ._price_reload').getAttribute('data-reload-date');											
 						}
 						
 						const categoryDepth	= good.querySelectorAll('.depth a');																											// 상품 카테고리 info
@@ -144,7 +153,7 @@ naverCrawler.scraping = async(page) => {
 				
 			}
 			
-	    }
+	    };
 	    
 	    await page.waitFor(1000);
 	    

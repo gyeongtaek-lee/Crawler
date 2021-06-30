@@ -38,7 +38,7 @@ class Naver extends Crawler {
 		// 네이버 쇼핑 페이지 로딩 여부 확인
 		try {
 			
-			  const temp = await page.waitForSelector('.content_area', { timeout: 5000 });
+			  const temp = await page.waitForSelector('.list_basis', { timeout: 5000 });
 			  
 		} catch (error) {
 			

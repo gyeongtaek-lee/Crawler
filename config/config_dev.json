@@ -1,9 +1,9 @@
 {
   "mongodb": {
-    "username": "test",
-    "password": "test",
-    "database": "local",
-    "host": "10.203.7.214:16010",
+    "username": "leegt80",
+    "password": "oracle2806!",
+    "database": "test",
+    "host": "cluster0.jn4nh.mongodb.net/myFirstDatabase",
     "dialect": "mongodb"
   },
   "token": {
