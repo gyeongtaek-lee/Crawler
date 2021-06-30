@@ -39,7 +39,7 @@ class NaverShoppngLowPrice extends Crawler {
 		// 네이버 쇼핑 페이지 로딩 여부 확인
 		try {
 			
-			await page.waitForSelector('.searchInput_search_input__1Eclz', { timeout: 5000 });
+			await page.waitForSelector('.searchInput_input_text__2AOjQ', { timeout: 5000 });
 			  
 		} catch (error) {
 			
@@ -63,7 +63,7 @@ class NaverShoppngLowPrice extends Crawler {
 				
 				console.log(model.name);
 				
-				await page.waitFor(1000);
+				await page.waitFor(5000);
 			
 				// Run scraping method
 				const contents = await naverCrawler.scraping(page, model);

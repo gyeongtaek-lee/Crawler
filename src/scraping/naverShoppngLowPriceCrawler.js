@@ -20,7 +20,7 @@ const { ContentNotFoundError, TargetNotAccessError, InternalError } = require('.
 naverCrawler.scraping = async(page, model) => {
 	
 	// page evaluate 내부의 노드에 전달하고 페이지를 평가하는 동안 콘솔 출력하는 방법 
-	page.on('console', (log) => console[log._type](log._text));
+//	page.on('console', (log) => console[log._type](log._text));
 	
 	let result = new Array();
 		
@@ -29,21 +29,44 @@ naverCrawler.scraping = async(page, model) => {
 	
 	const exptWords = config.expt_word.word.join(" ");
 	
+	const modelNm = model.name;
+	const modelItemNm = model.itemNm;
+	const modelPrice = model.price;
+	
+	let initItem = {modelNm, modelItemNm, modelPrice};
+	
 	
 	try {
 		
+		/*const inputValue = await page.$eval('.searchInput_input_text__2AOjQ', el => el.value);
+		
+		console.log('aaa='+inputValue.length);
+		
+		for (let i = 0; i < inputValue.length; i++) {
+			
+			console.log(i);
+			
+		  await page.keyboard.press('Backspace');
+		  
+		}*/
+		
+		const input = await page.$('.searchInput_input_text__2AOjQ');
+		await input.click({ clickCount: 3 })
+		
+		await page.waitFor(1000);
+		
 		// 검색 창 초기화
-		await page.$eval('.searchInput_search_input__1Eclz', el => el.value = '');
+//		await page.$eval('.searchInput_input_text__2AOjQ', el => el.value  = '');
 		
 		// 검색 창 등록
-		await page.type('.searchInput_search_input__1Eclz', model.name.concat(" ", exptWords));
+		await page.type('.searchInput_input_text__2AOjQ', model.name.concat(" ", exptWords));
 		
 		await page.waitFor(500);
 		
 		// 검색 버튼 클릭
-		await page.click('.searchInput_btn_search__2Jzpc');
+		await page.click('.gnb_btn_search__3LkPB');
 		
-		await page.waitForSelector('.list_basis', { timeout: 5000 });
+		await page.waitForSelector('.products_list__3sRwl', { timeout: 5000 });
 		
 		// 클릭이벤트(낮은 가격순)
 //		await page.click('.subFilter_sort_box__1r06j > a:nth-of-type(2)');	
@@ -51,7 +74,7 @@ naverCrawler.scraping = async(page, model) => {
 		await page.waitFor(500);
 		
 	    // 상품 목록 수
-	    goodCnt = await page.$$eval('.list_basis li', li => li.length);
+	    goodCnt = await page.$$eval('.products_list__3sRwl li', li => li.length);
 	 
 	    if ( 0 < goodCnt ) {
 	    	
@@ -65,7 +88,7 @@ naverCrawler.scraping = async(page, model) => {
 				const itemNm	= model.itemNm;
 				const lgeItemPrc= model.price;
 				
-				const good = document.querySelector('.list_basis li:first-child');
+				const good = document.querySelector('.products_list__3sRwl li:first-child');
 				
 //				console.log(good);
 //				console.log(modelNm);
@@ -73,7 +96,7 @@ naverCrawler.scraping = async(page, model) => {
 				
 				if (good) {
 					
-					let price = good.querySelector('.price_num__2WUXn') && good.querySelector('.price_num__2WUXn').textContent;		// 상품 가격	
+					let price = good.querySelector('.product_price__JznNt') && good.querySelector('.product_price__JznNt').textContent;		// 상품 가격	
 					
 //					console.log(price);
 																						
@@ -85,13 +108,13 @@ naverCrawler.scraping = async(page, model) => {
 //						priceReloadDt = good.querySelector('.price ._price_reload').getAttribute('data-reload-date')	;											
 //					}
 //					
-					const categoryDepth	= good.querySelectorAll('.basicList_category__wVevj');																											// 상품 카테고리 info
+//					const categoryDepth	= good.querySelectorAll('.basicList_category__wVevj');																											// 상품 카테고리 info
 					let category1 = '';																																									// 카테고리 hierarchy 
 					let category2 = '';																																									// 카테고리 hierarchy 
 					let category3 = '';																																									// 카테고리 hierarchy 
 					let category4 = '';																																									// 카테고리 hierarchy 
 					
-					for (const [_i, _v] of categoryDepth.entries()) {
+		/*			for (const [_i, _v] of categoryDepth.entries()) {
 						switch ( _i ) {
 						  case 1:
 							  category1 = _v.textContent;
@@ -108,7 +131,7 @@ naverCrawler.scraping = async(page, model) => {
 						  default:
 						    console.debug('none depth!!');
 						}
-					}
+					}*/
 					
 //					categoryDepth.forEach((c) => {
 //						const name	= c.textContent;
@@ -160,6 +183,8 @@ naverCrawler.scraping = async(page, model) => {
 					item = {modelNm, itemNm, lgeItemPrc, price, category1, category2, category3, category4};
 					
 				}
+				
+//				document.querySelector('.searchInput_input_text__2AOjQ').value = "";
 
 				return item;
 				
@@ -175,11 +200,22 @@ naverCrawler.scraping = async(page, model) => {
 	    
 	    await page.waitFor(1000);
 	    
-	} catch (e) {
+	} catch (e) {	
 		
-	    logger.error(`[naverShoppingLowPriceCrawler.js] Naver scraping ${e}`);
-	    
-	    result = null;
+		if (e.message.includes("timeout 5000ms exceeded")) {
+			
+			goodCnt = 1;
+			
+			result.push(initItem);
+			
+		}
+		else {
+			
+			   logger.error(`[naverShoppingLowPriceCrawler.js] Naver scraping ${e}`);
+			    
+			   result = null;
+			
+		}
 	    
 	} finally {
 		
